@@ -20,6 +20,7 @@ import {
   Colors,
   Img,
   Lightning,
+  VideoPlayer
 } from '@lightningjs/sdk';
 import { List } from '@lightningjs/ui';
 
@@ -214,9 +215,11 @@ export default class Player extends Page {
             case 'play':
                 if(this._progressAnimation.isActive()) {
                     this._progressAnimation.pause();
+                    this.unPunchHole();
                 }
                 else {
                     this._progressAnimation.play();
+                    this.playVideo();
                 }
                 break;
             case 'next':
@@ -227,6 +230,39 @@ export default class Player extends Page {
                 break;
         }
         this._showEventMessage(`handle ${currentButton.action} button action`);
+    }
+
+    playVideo() {
+        console.log('Playing video');
+        //VideoPlayer.consume(this);
+        this.punchHole();
+        VideoPlayer.size(1920, 1080);
+        VideoPlayer.open(
+            'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+        )
+        VideoPlayer.position(0, 0);
+    }
+
+    punchHole() {
+        const overlay = this.tag('Overlay');
+        console.log('Overlay', overlay);
+        this.tag('Placeholder').patch({visible: false});
+        this.tag('ScreenBlock').patch({visible: false});
+        overlay.shaders = {
+            type: Lightning.shaders.Hole,
+            x: 0,
+            y: 0,
+            w: 1920,
+            h: 1080
+        }
+    }
+
+    unPunchHole() {
+        const overlay = this.tag('Overlay');
+        overlay.shader = {};
+        this.tag('Placeholder').patch({visible: true});
+        this.tag('ScreenBlock').patch({visible: true});
+        VideoPlayer.pause();
     }
 
     _captureKey() {

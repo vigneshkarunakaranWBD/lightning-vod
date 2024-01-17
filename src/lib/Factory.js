@@ -19,7 +19,8 @@ import { Strip, Item} from "@/components"
 
 export const createPageComponents = (strips) => {
     return strips.map(({title, media_type, items}) => {
-        return {type: Strip, itemType: Item, h: Item.height + 80, title, index: 0, items: createItemCollection(items, media_type)}
+        const newItems = [...items, ...items, ...items, ...items];
+        return {type: Strip, itemType: Item, h: Item.height + 80, title, index: 0, items: createItemCollection(newItems, media_type)}
     });
 }
 
